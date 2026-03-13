@@ -1,0 +1,24 @@
+{
+  "name": "movie-app-learning",
+  "version": "1.0.0",
+  "description": "* Day 1: JavaScript movie logic\r * Day 2: Async JavaScript\r * Day 3: Node setup\r * Day 4: Express server\r * Day 5: Login page\r * Day 6: Auth middleware\r * Day 7: PostgreSQL connection\r * Day 8: Movie CRUD API",
+  "homepage": "https://github.com/vmanX8/movie-app-learning#readme",
+  "bugs": {
+    "url": "https://github.com/vmanX8/movie-app-learning/issues"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/vmanX8/movie-app-learning.git"
+  },
+  "license": "ISC",
+  "author": "",
+  "type": "commonjs",
+  "main": "index.js",
+  "scripts": {
+      "start": "node day2.js",
+      "dev": "nodemon day2.js"
+  },
+  "dependencies": {
+    "nodemon": "^3.1.14"
+  }
+}
