@@ -1,8 +1,8 @@
 const movies = require("../models/movies.model");
 
 const getMovies = (req, res) => {
-  res.json("Welcome to the Movie API! <br>" + JSON.stringify(movies));
-}
+  res.json({ message: "Welcome to the Movie API!", data: movies });
+};
 
 const getMovieById  = (req, res) => {
   const movieId = Number(req.params.id);
@@ -12,7 +12,7 @@ const getMovieById  = (req, res) => {
     return res.status(404).json({ error: "404: Movie not found" });
   }
   
-  res.json(movie);
+  res.json({ message: "Movie found", data: movie });
 };
 
 const createMovie = (req, res) => {
@@ -30,7 +30,7 @@ const createMovie = (req, res) => {
   };
   movies.push(newMovie);
 
-  res.status(201).json(newMovie);
+  res.status(201).json({ message: "Movie created successfully", data: newMovie });
 };
 
 const deleteMovie = (req, res) => {
