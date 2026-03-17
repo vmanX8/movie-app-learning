@@ -35,11 +35,15 @@ const createMovie = (req, res) => {
 
 const deleteMovie = (req, res) => {
     const movieId = Number(req.params.id);
+    if (Number.isNaN(movieId) || movieId <= 0) {
+    return res.status(400).json({error: "400: Invalid movie ID"});
+    }
+
     const movieIndex = movies.findIndex((movie) => movie.id === movieId);
 
     if (movieIndex === -1) {
     return res.status(404).json({ error: "404: Movie not found" });
-  }
+    }
 
     movies.splice(movieIndex, 1);
     res.json({ message: "Movie deleted successfully" });

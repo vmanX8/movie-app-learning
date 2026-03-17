@@ -4,9 +4,11 @@ const app = express();
 const PORT = 3000;
 
 const moviesRoutes = require("./routes/movies.routes");
+const authRoutes = require("./routes/auth.routes");
 
 app.use(express.json());
 
+app.use(authRoutes);
 app.use("/movies", moviesRoutes);
 
 app.get("/", (req, res) => {
