@@ -1,16 +1,23 @@
 const users = require("../models/users.model");
-const activeTokens = require("../models/token.model");
+const activeTokens = require("../models/tokens.model");
+const bcrypt = require("bcrypt")
 
-const login = (req, res) => {
+const login = async (req, res) => {
   const { username, pass } = req.body;
 
     if (!username || !pass) {
     return res.status(400).json({ error: "400: Username and password are required", message: "Please provide both username and password in the request body" });
     }
 
-  const user = users.find((user) => user.username === username && user.pass === pass);
+  const user = users.find((user) => user.username === username);
 
     if (!user) {
+    return res.status(401).json({ error: "401: Invalid credentials", message: "Please check your username and password" });
+    }
+
+    const isPasswordValid = await bcrypt.compare(pass, user.pass);
+
+    if (!isPasswordValid) {
     return res.status(401).json({ error: "401: Invalid credentials", message: "Please check your username and password" });
     }
 
@@ -30,7 +37,7 @@ const logout = (req, res) => {
     if (tokenIndex === -1) {
     return res.status(400).json({ error: "400: Invalid token", message: "The provided token is not valid or user has already been logged out" });
     }
-    
+
   activeTokens.splice(tokenIndex, 1);
 
     res.json({ message: "Logout successful" });

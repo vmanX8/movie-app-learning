@@ -1,4 +1,4 @@
-const activeTokens = require("../models/token.model");
+const activeTokens = require("../models/tokens.model");
 const users = require("../models/users.model");
 
 const protect = (req, res, next) => {
