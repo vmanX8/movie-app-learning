@@ -1,24 +1,24 @@
-const activeTokens = require("../models/tokens.model");
-const users = require("../models/users.model");
+const jwt = require("jsonwebtoken");
+const { JWT_secret } = require("../config/auth");
+
 
 const protect = (req, res, next) => {
-  const token = req.headers.authorization; 
-
-if (!token) {
+  const authheader = req.headers.authorization; 
+  if (!authheader) {
     return res.status(401).json({ error: "401: No token provided" });
   }
 
-  const storedToken = activeTokens.find((entry) => entry.token === token);
+  const token = authheader.startsWith("Bearer ") ? authheader.split(" ")[1] : authheader;
 
-    if (!storedToken) {
-    return res.status(401).json({ error: "401: Invalid token" });
-    }
+  try {
+    const decoded = jwt.verify(token, JWT_secret);
 
-    const user = users.find((u) => u.id === storedToken.userId);
-
-    req.user = user;
+    req.user = { id: decoded.id, username: decoded.username };
 
     next();
+  }catch (error) {
+    return res.status(401).json({ error: "401: Invalid token" });
+  }
 };
 
 module.exports = { protect };
