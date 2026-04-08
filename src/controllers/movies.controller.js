@@ -83,9 +83,45 @@ const deleteMovie = async (req, res) => {
   }
 };
 
+const updateMovie = async (req, res) => {
+  const movieId = Number(req.params.id);
+  const { title, year } = req.body;
+
+  if (Number.isNaN(movieId) || movieId <= 0) {
+    return res.status(400).json({
+      error: "400: Invalid movie ID",
+      message: "Please provide a valid positive integer for the movie ID in the URL parameter",
+    });
+  }
+
+  if (!title || !year) {
+    return res.status(400).json({
+      error: "400: Title and year are required",
+      message: "Please provide both title and year in the request body",
+    });
+  }
+
+  try {
+    const updatedMovie = await movies.update(movieId, title, year);
+
+    if (!updatedMovie) {
+      return res.status(404).json({
+        error: "404: Movie not found",
+        message: `No movie found with ID ${movieId}`,
+      });
+    }
+
+    res.json({ message: "Movie updated successfully", data: updatedMovie });
+  } catch (error) {
+    console.error("Error updating movie", error);
+    res.status(500).json({ error: "500: Could not update movie", message: "Internal server error" });
+  }
+};
+
 module.exports = {
   getMovies,
   getMovieById,
   createMovie,
+  updateMovie,
   deleteMovie,
 };
