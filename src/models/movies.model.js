@@ -1,14 +1,34 @@
-const movies = [
-  {id: 1, title: "Interstellar", year: 2014},
-  {id: 2, title: "The Dark Knight", year: 2008},
-  {id: 3, title: "Inception", year: 2010},
-  {id: 4, title: "The Prestige", year: 2006},
-  {id: 5, title: "Batman Begins", year: 2005},
-  {id: 6, title: "Dunkirk", year: 2017},
-  {id: 7, title: "Tenet", year: 2020},
-  {id: 8, title: "Memento", year: 2000},
-  {id: 9, title: "Insomnia", year: 2002},
-  {id: 10, title: "Following", year: 1998}
-];
+const db = require("../config/db");
 
-module.exports = movies;
+const getAll = async () => {
+  const result = await db.query("SELECT id, title, year FROM movies ORDER BY id");
+  return result.rows;
+};
+
+const getById = async (id) => {
+  const result = await db.query(
+    "SELECT id, title, year FROM movies WHERE id = $1",
+    [id]
+  );
+  return result.rows[0] || null;
+};
+
+const create = async (title, year) => {
+  const result = await db.query(
+    "INSERT INTO movies (title, year) VALUES ($1, $2) RETURNING id, title, year",
+    [title, year]
+  );
+  return result.rows[0];
+};
+
+const remove = async (id) => {
+  const result = await db.query("DELETE FROM movies WHERE id = $1", [id]);
+  return result.rowCount;
+};
+
+module.exports = {
+  getAll,
+  getById,
+  create,
+  remove,
+};

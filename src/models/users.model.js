@@ -1,6 +1,13 @@
-const users = [
-  { id: 1, username: "admin", pass: "$2b$10$mRSxvVuFXMdBWAhyMszeT.ZqjgvOHrvXfEXm19Q2.8yPphC9/WcRS" },
-  { id: 2, username: "John", pass: "$2b$10$IgKXbcVLuPEHYXGpRk0ZvuF7uEXq.qzEubnx.J4kj1DVkLFICjIL6" }
-];
+const db = require("../config/db");
 
-module.exports = users;
+const findByUsername = async (username) => {
+  const result = await db.query(
+    "SELECT id, username, pass FROM users WHERE username = $1",
+    [username]
+  );
+  return result.rows[0] || null;
+};
+
+module.exports = {
+  findByUsername,
+};
