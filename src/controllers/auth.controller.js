@@ -3,6 +3,42 @@ const bcrypt = require("bcrypt");
 const jwt = require("jsonwebtoken");
 const { JWT_secret } = require("../config/auth");
 
+const register = async (req, res) => {
+  const { username, pass } = req.body;
+
+  if (!username || !pass) {
+    return res.status(400).json({
+      error: "400: Username and password are required",
+      message: "Please provide both username and password in the request body",
+    });
+  }
+
+  try {
+    // Check if user already exists
+    const existingUser = await users.findByUsername(username);
+    if (existingUser) {
+      return res.status(409).json({
+        error: "409: User already exists",
+        message: "A user with this username already exists",
+      });
+    }
+
+    // Hash the password
+    const hashedPassword = await bcrypt.hash(pass, 10);
+
+    // Create the user
+    const newUser = await users.create(username, hashedPassword);
+
+    res.status(201).json({
+      message: "User registered successfully",
+      user: { id: newUser.id, username: newUser.username },
+    });
+  } catch (error) {
+    console.error("Registration error", error);
+    res.status(500).json({ error: "500: Registration failed", message: "Internal server error" });
+  }
+};
+
 const login = async (req, res) => {
   const { username, pass } = req.body;
 
@@ -52,6 +88,7 @@ const logout = (req, res) => {
 };
 
 module.exports = {
+  register,
   login,
   logout,
 };
